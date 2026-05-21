@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .app-container {
+    @apply min-h-screen bg-zinc-950 text-white flex flex-col items-center py-12 px-4 font-sans;
+  }
+  
+  .content-wrapper {
+    @apply max-w-4xl w-full;
+  }
+
+  .main-card {
+    @apply bg-zinc-900 border border-zinc-800 rounded-xl shadow-lg p-6 md:p-10;
+  }
+
+  .header-title {
+    @apply text-3xl md:text-4xl font-bold mb-2 text-white;
+  }
+  
+  .header-subtitle {
+    @apply text-zinc-400 max-w-xl mx-auto;
+  }
+  
+  .section-label {
+    @apply block text-sm font-medium text-zinc-300 mb-2;
+  }
+
+  /* Adapted single line input matching the text cipher's textarea-base styling */
+  .input-base {
+    @apply w-full bg-zinc-950 border border-zinc-800 rounded-lg p-4 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-zinc-500 transition-colors font-mono text-base leading-none;
+  }
+
+  .panel-card {
+    @apply bg-zinc-950/50 border border-zinc-800 rounded-lg p-5 space-y-4 relative;
+  }
+
+  /* Category tabs matching the mode toggle group in the text cipher */
+  .category-tabs {
+    @apply flex bg-zinc-950 rounded-lg p-1 border border-zinc-800 max-w-md mx-auto mb-8;
+  }
+
+  .category-tab-btn {
+    @apply flex-1 flex items-center justify-center py-2 px-4 rounded-md text-sm font-medium transition-colors gap-2 cursor-pointer;
+  }
+
+  .category-tab-btn-active {
+    @apply bg-zinc-800 text-white;
+  }
+
+  .category-tab-btn-inactive {
+    @apply text-zinc-400 hover:text-zinc-200;
+  }
+
+  /* Unit select styled to align with the text cipher controls panel elements */
+  .unit-select {
+    @apply w-full bg-zinc-950 border border-zinc-800 rounded-lg py-3 px-4 text-sm font-medium text-zinc-300 focus:outline-none focus:border-zinc-500 transition-all cursor-pointer hover:border-zinc-700 hover:text-white appearance-none;
+  }
+
+  /* Swap button styled to align with the copy-btn and controls from the text cipher */
+  .swap-btn {
+    @apply p-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-md transition-colors border border-zinc-700 shadow-md flex items-center justify-center active:scale-95 cursor-pointer;
+  }
+
+  .swap-icon-container {
+    @apply flex items-center justify-center my-2 lg:my-0;
+  }
+
+  /* Absolute position copy button aligned with the text cipher's copy-btn */
+  .copy-btn {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-md transition-colors border border-zinc-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+}
+
+body {
+  margin: 0;
+  background-color: #09090b;
+  color: white;
+}
