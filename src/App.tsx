@@ -160,35 +160,61 @@ export default function App() {
     }
   };
 
-  // Updates left unit selection and recalculates the right side.
+  // Updates left unit selection and recalculates the appropriate side depending on active side.
   const handleLeftUnitChange = (newUnit: string) => {
     setLeftUnit(newUnit);
 
-    if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
-      setRightValue("");
-      return;
-    }
+    if (activeSide === "left") {
+      if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
+        setRightValue("");
+        return;
+      }
 
-    const parsed = parseFloat(leftValue);
-    if (!isNaN(parsed)) {
-      const converted = convert(parsed, newUnit, rightUnit, category);
-      setRightValue(formatNumber(converted));
+      const parsed = parseFloat(leftValue);
+      if (!isNaN(parsed)) {
+        const converted = convert(parsed, newUnit, rightUnit, category);
+        setRightValue(formatNumber(converted));
+      }
+    } else {
+      if (rightValue === "" || rightValue === "-" || rightValue === "." || rightValue === "-.") {
+        setLeftValue("");
+        return;
+      }
+
+      const parsed = parseFloat(rightValue);
+      if (!isNaN(parsed)) {
+        const converted = convert(parsed, rightUnit, newUnit, category);
+        setLeftValue(formatNumber(converted));
+      }
     }
   };
 
-  // Updates right unit selection and recalculates the right side.
+  // Updates right unit selection and recalculates the appropriate side depending on active side.
   const handleRightUnitChange = (newUnit: string) => {
     setRightUnit(newUnit);
 
-    if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
-      setRightValue("");
-      return;
-    }
+    if (activeSide === "left") {
+      if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
+        setRightValue("");
+        return;
+      }
 
-    const parsed = parseFloat(leftValue);
-    if (!isNaN(parsed)) {
-      const converted = convert(parsed, leftUnit, newUnit, category);
-      setRightValue(formatNumber(converted));
+      const parsed = parseFloat(leftValue);
+      if (!isNaN(parsed)) {
+        const converted = convert(parsed, leftUnit, newUnit, category);
+        setRightValue(formatNumber(converted));
+      }
+    } else {
+      if (rightValue === "" || rightValue === "-" || rightValue === "." || rightValue === "-.") {
+        setLeftValue("");
+        return;
+      }
+
+      const parsed = parseFloat(rightValue);
+      if (!isNaN(parsed)) {
+        const converted = convert(parsed, newUnit, leftUnit, category);
+        setLeftValue(formatNumber(converted));
+      }
     }
   };
 
