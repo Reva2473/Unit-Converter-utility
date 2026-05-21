@@ -260,6 +260,10 @@ export default function App() {
     <div className="app-container">
       <div className="content-wrapper">
         <main className="main-card">
+          <div className="text-center mb-10">
+            <h1 className="header-title">Live Unit Converter</h1>
+          </div>
+
           {/* Category Tabs bar */}
           <div className="category-tabs" role="tablist" aria-label="Conversion categories">
             {(Object.keys(CATEGORIES) as Category[]).map((cat) => {
