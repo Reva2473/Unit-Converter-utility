@@ -1,8 +1,8 @@
 # Live Unit Converter
 
-![Live Unit Converter UI](./public/unit-converter.png)
+![Live Unit Converter UI](./public/ui.png)
 
-A standalone, beginner-friendly React application for real-time live unit conversions. It features a clean, minimalist dark-mode UI that perfectly matches the Text Cipher design system, performing all calculations locally in your browser instantly.
+A standalone, beginner-friendly React application for real-time live unit conversions. It features a clean, minimalist dark-mode UI performing all calculations locally in your browser instantly.
 
 ## Features
 
@@ -18,7 +18,7 @@ A standalone, beginner-friendly React application for real-time live unit conver
 
 ## Tech Stack
 
-- **Framework:** [React 18](https://react.dev/)
+- **Framework:** [React JS](https://react.dev/)
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **Icons:** [Lucide React](https://lucide.dev/)

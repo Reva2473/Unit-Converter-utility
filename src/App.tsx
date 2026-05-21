@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { 
-  Thermometer, 
-  Scale, 
-  Ruler, 
-  Copy, 
-  Check, 
+import {
+  Thermometer,
+  Scale,
+  Ruler,
+  Copy,
+  Check,
   ArrowRightLeft,
   ChevronDown
 } from "lucide-react";
@@ -42,15 +42,7 @@ const CATEGORIES: Record<Category, CategoryConfig> = {
   },
 };
 
-/**
- * Handles the core conversion math across categories.
- * 
- * @param value The numerical value to convert.
- * @param from The current unit of the value.
- * @param to The target unit to convert to.
- * @param category The active category (Temperature, Weight, Length).
- * @returns The converted numerical value.
- */
+// Handles the core conversion math across categories (Temperature, Weight, Length).
 const convert = (value: number, from: string, to: string, category: Category): number => {
   if (from === to) return value;
 
@@ -102,10 +94,7 @@ const convert = (value: number, from: string, to: string, category: Category): n
   return value;
 };
 
-/**
- * Rounds a number to a max of 6 decimal places, omitting trailing zeros for peak readability.
- * Example: 2.2046226218 -> 2.204623, 100.000 -> 100
- */
+// Rounds a number to a max of 6 decimal places, omitting trailing zeros for peak readability.
 const formatNumber = (num: number): string => {
   if (isNaN(num)) return "";
   if (Number.isInteger(num)) return num.toString();
@@ -115,9 +104,9 @@ const formatNumber = (num: number): string => {
 };
 
 export default function App() {
-  // --- State Setup ---
+  // State Setup
   const [category, setCategory] = useState<Category>("Temperature");
-  
+
   // Left and right selected units
   const [leftUnit, setLeftUnit] = useState<string>("Celsius");
   const [rightUnit, setRightUnit] = useState<string>("Fahrenheit");
@@ -132,25 +121,20 @@ export default function App() {
   // Visual success trigger states for the Copy Clipboard utility
   const [copiedSide, setCopiedSide] = useState<"left" | "right" | null>(null);
 
-  // --- Core Sync Handlers ---
 
-  /**
-   * Synchronises the converter values when a user types into an input field.
-   * Maintains raw text on the active side (supporting intermediate values like '-' or '.')
-   * and populates the counterpart side with the calculated and formatted result.
-   */
+  // Synchronizes converter values during typing and populates counterpart.
   const handleInputChange = (val: string, side: "left" | "right") => {
     setActiveSide(side);
-    
+
     if (side === "left") {
       setLeftValue(val);
-      
+
       // Gracefully clear counterpart if the input is empty or just a symbol prefix
       if (val === "" || val === "-" || val === "." || val === "-.") {
         setRightValue("");
         return;
       }
-      
+
       const parsed = parseFloat(val);
       if (!isNaN(parsed)) {
         const converted = convert(parsed, leftUnit, rightUnit, category);
@@ -160,12 +144,12 @@ export default function App() {
       }
     } else {
       setRightValue(val);
-      
+
       if (val === "" || val === "-" || val === "." || val === "-.") {
         setLeftValue("");
         return;
       }
-      
+
       const parsed = parseFloat(val);
       if (!isNaN(parsed)) {
         const converted = convert(parsed, rightUnit, leftUnit, category);
@@ -176,19 +160,15 @@ export default function App() {
     }
   };
 
-  /**
-   * Updates unit selections.
-   * If the user shifts the left unit dropdown, we update leftUnit and 
-   * recalculate rightValue using the current leftValue as source of truth.
-   */
+  // Updates left unit selection and recalculates the right side.
   const handleLeftUnitChange = (newUnit: string) => {
     setLeftUnit(newUnit);
-    
+
     if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
       setRightValue("");
       return;
     }
-    
+
     const parsed = parseFloat(leftValue);
     if (!isNaN(parsed)) {
       const converted = convert(parsed, newUnit, rightUnit, category);
@@ -196,18 +176,15 @@ export default function App() {
     }
   };
 
-  /**
-   * If the user shifts the right unit dropdown, we update rightUnit and
-   * recalculate rightValue (keeping leftValue stable for continuity).
-   */
+  // Updates right unit selection and recalculates the right side.
   const handleRightUnitChange = (newUnit: string) => {
     setRightUnit(newUnit);
-    
+
     if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
       setRightValue("");
       return;
     }
-    
+
     const parsed = parseFloat(leftValue);
     if (!isNaN(parsed)) {
       const converted = convert(parsed, leftUnit, newUnit, category);
@@ -215,28 +192,22 @@ export default function App() {
     }
   };
 
-  /**
-   * Switches the converter between categories (Temperature, Weight, Length).
-   * Resets unit configurations to defaults and initialises input with a default "1" value.
-   */
+  // Switches between categories and resets default values.
   const handleCategoryChange = (newCat: Category) => {
     setCategory(newCat);
     const config = CATEGORIES[newCat];
-    
+
     setLeftUnit(config.defaultLeft);
     setRightUnit(config.defaultRight);
-    
+
     setLeftValue("1");
     setActiveSide("left");
-    
+
     const converted = convert(1, config.defaultLeft, config.defaultRight, newCat);
     setRightValue(formatNumber(converted));
   };
 
-  /**
-   * Custom Swap Units Utility
-   * Swaps both units and active inputs simultaneously, ensuring a flawless symmetric transition.
-   */
+  // Swaps both units and active values simultaneously.
   const handleSwap = () => {
     setLeftUnit(rightUnit);
     setRightUnit(leftUnit);
@@ -245,10 +216,7 @@ export default function App() {
     setActiveSide(activeSide === "left" ? "right" : "left");
   };
 
-  /**
-   * Copy-to-Clipboard Utility
-   * Copies the numeric value and provides visual checkmark feedback.
-   */
+  // Copies the numeric value to clipboard with feedback.
   const copyToClipboard = async (textToCopy: string, side: "left" | "right") => {
     if (!textToCopy) return;
     try {
@@ -289,7 +257,7 @@ export default function App() {
 
           {/* Converter side-by-side split grids */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
+
             {/* LEFT INPUT PANEL */}
             <div className="lg:col-span-5">
               <div className="panel-card">
@@ -299,7 +267,7 @@ export default function App() {
                     From
                   </span>
                 </div>
-                
+
                 {/* Numeric Input & Absolute Positioned Copy Button */}
                 <div className="relative">
                   <input
@@ -368,7 +336,7 @@ export default function App() {
                     To
                   </span>
                 </div>
-                
+
                 {/* Numeric Input & Absolute Positioned Copy Button */}
                 <div className="relative">
                   <input
@@ -417,7 +385,7 @@ export default function App() {
             </div>
 
           </div>
-          
+
         </main>
       </div>
     </div>
