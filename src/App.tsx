@@ -94,7 +94,12 @@ const convert = (value: number, from: string, to: string, category: Category): n
   return value;
 };
 
-// Rounds a number to a max of 6 decimal places, omitting trailing zeros for peak readability.
+// Checks if input is a valid number (not empty or just a minus/dot)
+const isValidInput = (val: string): boolean => {
+  return val !== "" && val !== "-" && val !== "." && val !== "-.";
+};
+
+// Formats number to max 6 decimals and removes trailing zeros
 const formatNumber = (num: number): string => {
   if (isNaN(num)) return "";
   if (Number.isInteger(num)) return num.toString();
@@ -104,33 +109,33 @@ const formatNumber = (num: number): string => {
 };
 
 export default function App() {
-  // State Setup
+  // State definitions
   const [category, setCategory] = useState<Category>("Temperature");
 
-  // Left and right selected units
+  // Selected units
   const [leftUnit, setLeftUnit] = useState<string>("Celsius");
   const [rightUnit, setRightUnit] = useState<string>("Fahrenheit");
 
-  // Raw input strings to seamlessly manage intermediate typing states (e.g. "-", "1.")
+  // Input values (keeping strings to handle incomplete typing like "-" or ".")
   const [leftValue, setLeftValue] = useState<string>("1");
   const [rightValue, setRightValue] = useState<string>("33.8");
 
-  // Track which input is active to handle independent live updates
+  // Tracks which side the user is currently editing
   const [activeSide, setActiveSide] = useState<"left" | "right">("left");
 
-  // Visual success trigger states for the Copy Clipboard utility
+  // Temporary state to show a checkmark when copied
   const [copiedSide, setCopiedSide] = useState<"left" | "right" | null>(null);
 
 
-  // Synchronizes converter values during typing and populates counterpart.
+  // Handles typing in either input and converts to the other side
   const handleInputChange = (val: string, side: "left" | "right") => {
     setActiveSide(side);
 
     if (side === "left") {
       setLeftValue(val);
 
-      // Gracefully clear counterpart if the input is empty or just a symbol prefix
-      if (val === "" || val === "-" || val === "." || val === "-.") {
+      // Clear counterpart if typing intermediate values
+      if (!isValidInput(val)) {
         setRightValue("");
         return;
       }
@@ -145,7 +150,8 @@ export default function App() {
     } else {
       setRightValue(val);
 
-      if (val === "" || val === "-" || val === "." || val === "-.") {
+      // Clear counterpart if typing intermediate values
+      if (!isValidInput(val)) {
         setLeftValue("");
         return;
       }
@@ -160,12 +166,12 @@ export default function App() {
     }
   };
 
-  // Updates left unit selection and recalculates the appropriate side depending on active side.
+  // Recalculates when left unit dropdown changes
   const handleLeftUnitChange = (newUnit: string) => {
     setLeftUnit(newUnit);
 
     if (activeSide === "left") {
-      if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
+      if (!isValidInput(leftValue)) {
         setRightValue("");
         return;
       }
@@ -176,7 +182,7 @@ export default function App() {
         setRightValue(formatNumber(converted));
       }
     } else {
-      if (rightValue === "" || rightValue === "-" || rightValue === "." || rightValue === "-.") {
+      if (!isValidInput(rightValue)) {
         setLeftValue("");
         return;
       }
@@ -189,12 +195,12 @@ export default function App() {
     }
   };
 
-  // Updates right unit selection and recalculates the appropriate side depending on active side.
+  // Recalculates when right unit dropdown changes
   const handleRightUnitChange = (newUnit: string) => {
     setRightUnit(newUnit);
 
     if (activeSide === "left") {
-      if (leftValue === "" || leftValue === "-" || leftValue === "." || leftValue === "-.") {
+      if (!isValidInput(leftValue)) {
         setRightValue("");
         return;
       }
@@ -205,7 +211,7 @@ export default function App() {
         setRightValue(formatNumber(converted));
       }
     } else {
-      if (rightValue === "" || rightValue === "-" || rightValue === "." || rightValue === "-.") {
+      if (!isValidInput(rightValue)) {
         setLeftValue("");
         return;
       }
@@ -218,7 +224,7 @@ export default function App() {
     }
   };
 
-  // Switches between categories and resets default values.
+  // Switch category and reset defaults
   const handleCategoryChange = (newCat: Category) => {
     setCategory(newCat);
     const config = CATEGORIES[newCat];
@@ -233,7 +239,7 @@ export default function App() {
     setRightValue(formatNumber(converted));
   };
 
-  // Swaps both units and active values simultaneously.
+  // Swap values and active sides
   const handleSwap = () => {
     setLeftUnit(rightUnit);
     setRightUnit(leftUnit);
@@ -242,7 +248,7 @@ export default function App() {
     setActiveSide(activeSide === "left" ? "right" : "left");
   };
 
-  // Copies the numeric value to clipboard with feedback.
+  // Copy value to clipboard with checkmark feedback
   const copyToClipboard = async (textToCopy: string, side: "left" | "right") => {
     if (!textToCopy) return;
     try {
@@ -264,7 +270,7 @@ export default function App() {
             <h1 className="header-title">Live Unit Converter</h1>
           </div>
 
-          {/* Category Tabs bar */}
+          {/* Category selectors */}
           <div className="category-tabs" role="tablist" aria-label="Conversion categories">
             {(Object.keys(CATEGORIES) as Category[]).map((cat) => {
               const Icon = CATEGORIES[cat].icon;
@@ -285,10 +291,10 @@ export default function App() {
             })}
           </div>
 
-          {/* Converter side-by-side split grids */}
+          {/* Twin layout panels */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
 
-            {/* LEFT INPUT PANEL */}
+            {/* Left side input */}
             <div className="lg:col-span-5">
               <div className="panel-card">
                 <div className="flex justify-between items-center">
@@ -298,7 +304,7 @@ export default function App() {
                   </span>
                 </div>
 
-                {/* Numeric Input & Absolute Positioned Copy Button */}
+                {/* Value input and copy button */}
                 <div className="relative">
                   <input
                     id="left-input"
@@ -324,7 +330,7 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Custom Selection Selector with Absolute Chevron Icon */}
+                {/* Dropdown unit select */}
                 <div className="relative">
                   <select
                     id="left-unit-select"
@@ -345,7 +351,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* INTERACTIVE SWAP CONTROL */}
+            {/* Swap values and units */}
             <div className="lg:col-span-2 swap-icon-container">
               <button
                 id="swap-units-btn"
@@ -357,7 +363,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* RIGHT OUTPUT PANEL */}
+            {/* Right side output */}
             <div className="lg:col-span-5">
               <div className="panel-card">
                 <div className="flex justify-between items-center">
@@ -367,7 +373,7 @@ export default function App() {
                   </span>
                 </div>
 
-                {/* Numeric Input & Absolute Positioned Copy Button */}
+                {/* Value input and copy button */}
                 <div className="relative">
                   <input
                     id="right-input"
@@ -393,7 +399,7 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Custom Selection Selector with Absolute Chevron Icon */}
+                {/* Dropdown unit select */}
                 <div className="relative">
                   <select
                     id="right-unit-select"
